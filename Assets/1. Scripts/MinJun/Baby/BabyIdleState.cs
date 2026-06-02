@@ -16,6 +16,7 @@ public class BabyIdleState : IBabyState
     public void Enter(BabyStateContext context)
     {
         m_Timer = context.IdleToNeedDelay;
+        GameManager.Instance.ClearState();
     }
 
     public void Tick(BabyStateContext context)
