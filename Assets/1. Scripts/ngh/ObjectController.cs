@@ -1,10 +1,14 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class ObjectController : MonoBehaviour
 {
     public GameObject bottle, cube;
-    private bool grab;
+    public GameObject bottlecollider; 
+    private BottleCollide bottlecolliderscript; 
+
+    private bool grab, set;
     private Vector3 pos;
 
     [SerializeField]
@@ -15,14 +19,17 @@ public class ObjectController : MonoBehaviour
 
     private void Start()
     {
-        
+        bottlecolliderscript = bottlecollider.GetComponent<BottleCollide>();
+        set = bottlecolliderscript.BottleSet; 
+
     }
 
     void Update()
     {
-        Vector3 camerapos = Camera.main.transform.position;
+        //Vector3 camerapos = Camera.main.transform.position;
 
-        if (grab)
+        set = bottlecolliderscript.BottleSet; 
+        if (grab && set)
         {
 
             ShakingCount(); 
@@ -30,7 +37,7 @@ public class ObjectController : MonoBehaviour
         }
     }
 
-    private void ShakingCount()
+    public void ShakingCount()
     {
         if (bottle.transform.position.y - pos.y >= ydir)
         {
@@ -46,8 +53,7 @@ public class ObjectController : MonoBehaviour
 
         if (moveup & movedown)
         {
-            
-            
+
             count++;
             Debug.Log(count); 
 
@@ -56,7 +62,8 @@ public class ObjectController : MonoBehaviour
             
             if(count == 12)
             {
-                //.
+                bottlecolliderscript.BottleSet = false; 
+                //Debug.Log("set : " + set); 
             }
         }
     }
@@ -66,10 +73,9 @@ public class ObjectController : MonoBehaviour
     {
         if (args.interactableObject.transform.CompareTag("Bottle"))
         {
-            
             grab = true;
             pos = args.interactableObject.transform.position;
-            Debug.Log(pos);
+            //Debug.Log(pos);
         }
     }
 
@@ -77,10 +83,10 @@ public class ObjectController : MonoBehaviour
     public void CanSelectEnter(SelectEnterEventArgs args)
     {
         Vector3 locpos = args.interactableObject.transform.position; 
-        Instantiate(cube, new Vector3(locpos.x,locpos.y,locpos.z), Quaternion.identity);
-        Debug.Log("a / " + locpos);
+        Instantiate(cube, new Vector3(locpos.x,locpos.y+0.02f,locpos.z), Quaternion.identity);
+        //Debug.Log("a / " + locpos);
     }
 
-    
+
 
 }
