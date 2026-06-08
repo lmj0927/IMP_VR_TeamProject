@@ -15,12 +15,18 @@ public class ItemBox : MonoBehaviour
     [Header("Items")]
     public GameObject[] itemPrefabs;
 
+    [Header("Float")]
+    public float floatAmplitude = 0.1f;
+    public float floatSpeed = 1.5f;
+    private Vector3 startPos;
+    
     private bool isOpen = false;
     private Transform playerCamera;
     private Vector3 originalPanelScale;
 
     void Start()
     {
+        startPos = transform.position;
         playerCamera = Camera.main.transform;
         
         foreach (var btn in GetComponentsInChildren<ItemButton>())
@@ -39,6 +45,9 @@ public class ItemBox : MonoBehaviour
 
     void Update()
     {
+        float newY = startPos.y + Mathf.Sin(Time.time * floatSpeed) * floatAmplitude;
+        transform.position = new Vector3(startPos.x, newY, startPos.z);
+        
         if (isOpen && selectionPanel != null)
         {
             selectionPanel.transform.LookAt(playerCamera);
