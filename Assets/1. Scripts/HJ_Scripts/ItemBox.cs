@@ -47,12 +47,6 @@ public class ItemBox : MonoBehaviour
     {
         float newY = startPos.y + Mathf.Sin(Time.time * floatSpeed) * floatAmplitude;
         transform.position = new Vector3(startPos.x, newY, startPos.z);
-        
-        if (isOpen && selectionPanel != null)
-        {
-            selectionPanel.transform.LookAt(playerCamera);
-            selectionPanel.transform.Rotate(0, 180f, 0);
-        }
     }
 
     void OnBoxSelected(SelectEnterEventArgs args)
@@ -65,8 +59,15 @@ public class ItemBox : MonoBehaviour
         else
         {
             isOpen = true;
-            selectionPanel.SetActive(true);
-            StartCoroutine(PopupAnimation(selectionPanel.transform));
+
+            if (selectionPanel != null)
+            {
+                selectionPanel.transform.LookAt(playerCamera);
+                selectionPanel.transform.Rotate(0, 180f, 0);
+
+                selectionPanel.SetActive(true);
+                StartCoroutine(PopupAnimation(selectionPanel.transform));
+            }
         }
     }
 
