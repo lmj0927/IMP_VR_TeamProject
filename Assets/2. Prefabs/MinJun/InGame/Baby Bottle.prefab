@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 503134502692966509}
   - component: {fileID: 8763265578057365423}
   - component: {fileID: 5860117956792693444}
+  - component: {fileID: -3484785974359301558}
   m_Layer: 0
   m_Name: Baby Bottle
   m_TagString: Untagged
@@ -284,3 +285,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinJun.Baby.BabyItemTypeComponent
   Kind: 1
+--- !u!114 &-3484785974359301558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8173484629123934554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 491d976cf4350bd4d9dcf1af9ccb6660, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BottleShakeController
+  m_PowderTag: powder
+  m_ShakeDistance: 0.1
+  m_RequiredShakeCount: 5
+  m_SocketInteractionLayer:
+    m_Bits: 4

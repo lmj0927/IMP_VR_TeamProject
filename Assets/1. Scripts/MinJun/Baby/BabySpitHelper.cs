@@ -9,7 +9,7 @@ public static class BabySpitHelper
         IXRSelectInteractable interactable,
         float spitForce)
     {
-        if (socket == null || interactable == null)
+        if (socket == null || interactable is not Object unityObj || unityObj == null)
             return;
 
         var manager = socket.interactionManager;

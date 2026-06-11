@@ -38,3 +38,11 @@ public class BabyOralNeedState : IBabyState
 
     public void OnSocketDetach(BabyStateContext context, XRSocketInteractor socket, IXRSelectInteractable interactable) { }
 }
+
+public enum BabyNeedState
+{
+    Idle,
+    Diaper,
+    Hungry,
+    Crying
+}

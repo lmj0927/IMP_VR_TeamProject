@@ -2,5 +2,6 @@ public enum BabyItemKind
 {
     Diaper,
     Bottle,
-    Pacifier
+    Pacifier,
+    None
 }

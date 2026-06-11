@@ -21,6 +21,8 @@ public class BabyIdleState : IBabyState
 
     public void Tick(BabyStateContext context)
     {
+        if (GameManager.Instance.CurrentGameState == GameState.GameClear)
+            return;
         m_Timer -= Time.deltaTime;
         if (m_Timer > 0f)
             return;

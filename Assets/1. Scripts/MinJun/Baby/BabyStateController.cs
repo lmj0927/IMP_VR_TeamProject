@@ -99,12 +99,46 @@ public class BabyStateController : MonoBehaviour
         m_OralFeedRoutine = StartCoroutine(OralFeedCompleteRoutine(socket, interactable));
     }
 
+    void OnDestroy()
+    {
+        if (m_OralFeedRoutine == null)
+            return;
+
+        StopCoroutine(m_OralFeedRoutine);
+        m_OralFeedRoutine = null;
+    }
+
+    static bool TryGetFeedObject(IXRSelectInteractable interactable, out GameObject feedObject)
+    {
+        feedObject = null;
+        if (interactable is not Component component)
+            return false;
+
+        feedObject = component.gameObject;
+        return feedObject != null;
+    }
+
     IEnumerator OralFeedCompleteRoutine(XRSocketInteractor socket, IXRSelectInteractable interactable)
     {
+        if (!TryGetFeedObject(interactable, out var feedObject))
+        {
+            m_OralFeedRoutine = null;
+            yield break;
+        }
+
         yield return new WaitForSeconds(m_FeedDuration);
 
-        if (socket != null && interactable != null)
+        if (feedObject == null || socket == null)
+        {
+            m_OralFeedRoutine = null;
+            yield break;
+        }
+
+        if (interactable is Object unityInteractable && unityInteractable != null)
             BabySpitHelper.RejectFromSocket(socket, interactable, m_SpitForce);
+
+        if (feedObject != null)
+            Destroy(feedObject, 1f);
 
         m_OralFeedRoutine = null;
     }

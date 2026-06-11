@@ -4,14 +4,11 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class BabyDiaperState : IBabyState
 {
-    public void Enter(BabyStateContext context)
-    {
-        MarkCurrentDiaperDirty(context);
-    }
+    public void Enter(BabyStateContext context) {}
 
     public void Tick(BabyStateContext context) { }
 
-    public void Exit(BabyStateContext context) { }
+    public void Exit(BabyStateContext context) { MarkCurrentDiaperDirty(context); }
 
     public void OnSocketAttach(BabyStateContext context, XRSocketInteractor socket, IXRSelectInteractable interactable)
     {
