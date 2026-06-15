@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
+/// <summary>Shows game over UI and retry button on time out.</summary>
 public class GameOverUI : MonoBehaviour
 {
 
@@ -18,6 +19,7 @@ public class GameOverUI : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
+        // Show text and retry button after fade completes
         fadeImage.DOFade(1, 1f).OnComplete(() => {
             gameOverText.gameObject.SetActive(true);
             retryButton.gameObject.SetActive(true);

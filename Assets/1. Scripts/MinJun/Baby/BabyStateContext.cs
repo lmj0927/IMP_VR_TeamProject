@@ -1,5 +1,6 @@
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
+/// <summary>Holds shared controller, socket, and timer references for baby states.</summary>
 public class BabyStateContext
 {
     public BabyStateController Controller;

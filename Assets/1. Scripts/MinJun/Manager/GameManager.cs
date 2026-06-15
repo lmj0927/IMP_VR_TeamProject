@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>Manages level progression, clear conditions, and time limit.</summary>
 public class GameManager : Singleton<GameManager>
 {
     [SerializeField] private int gameLevel = 1;
@@ -26,12 +27,14 @@ public class GameManager : Singleton<GameManager>
     {
         currentClearState++;
 
+        // Level clear on target count reached
         if (currentClearState >= requiredClearState)
         {
             currentGameState = GameState.GameClear;
 
             gameLevel++;
             currentClearState = 0;
+            // Activate portal on level 2
             if (gameLevel == 2)
             {
                 nextLevelPotal.SetActive(true);
@@ -51,6 +54,7 @@ public class GameManager : Singleton<GameManager>
         {
             gameTime -= Time.deltaTime;
             timeSlider.value = gameTime;
+            // Game over on time out
             if (gameTime <= 0)
             {
                 gameOverUI.Show();
@@ -81,6 +85,7 @@ public class GameManager : Singleton<GameManager>
     }
 }
 
+/// <summary>Game progression phase states.</summary>
 public enum GameState
 {
     Processing,

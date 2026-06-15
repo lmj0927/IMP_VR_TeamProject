@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AYellowpaper.SerializedCollections;
 
+/// <summary>Manages playing and stopping game sound clips.</summary>
 public class AudioManager : Singleton<AudioManager>
 {
     [SerializeField] private SerializedDictionary<AudioType, AudioClip> audioClips = new SerializedDictionary<AudioType, AudioClip>();
@@ -17,6 +18,7 @@ public class AudioManager : Singleton<AudioManager>
 
         if (type == AudioType.Crying)
         {
+            // Loop crying sound
             var source = audioSources[0];
             source.clip = clip;
             source.loop = true;
@@ -25,6 +27,7 @@ public class AudioManager : Singleton<AudioManager>
             return;
         }
 
+        // Prefer idle audio channel
         if (audioSources[0].isPlaying)
             audioSources[1].PlayOneShot(clip, volume);
         else
@@ -40,6 +43,7 @@ public class AudioManager : Singleton<AudioManager>
     }
 }
 
+/// <summary>Types of playable sounds.</summary>
 public enum AudioType
 {
     Crying,

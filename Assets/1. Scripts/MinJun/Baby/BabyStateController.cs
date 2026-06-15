@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
+/// <summary>Manages baby need state transitions and socket interactions.</summary>
 public class BabyStateController : MonoBehaviour
 {
     [SerializeField] XRSocketInteractor m_DiaperSocket;
@@ -31,6 +32,7 @@ public class BabyStateController : MonoBehaviour
         SetupSocketMonitors();
         RegisterSceneItems();
 
+        // Inject sockets and timers into context
         m_Context.Controller = this;
         m_Context.DiaperSocket = m_DiaperSocket;
         m_Context.MouthSocket = m_MouthSocket;
@@ -38,6 +40,7 @@ public class BabyStateController : MonoBehaviour
         m_Context.FeedDuration = m_FeedDuration;
         m_Context.SpitForce = m_SpitForce;
 
+        // Register state instances
         m_States[BabyNeedState.Idle] = new BabyIdleState();
         m_States[BabyNeedState.Diaper] = new BabyDiaperState();
         m_States[BabyNeedState.Hungry] = new BabyOralNeedState(BabyItemKind.Bottle);
@@ -56,6 +59,7 @@ public class BabyStateController : MonoBehaviour
 
     public void ChangeState(BabyNeedState next)
     {
+        // Prevent re-entering same state
         if (m_CurrentState != null && m_CurrentNeed == next)
             return;
 
@@ -74,6 +78,7 @@ public class BabyStateController : MonoBehaviour
         if (AudioManager.Instance == null)
             return;
 
+        // Stop crying on Idle, play crying otherwise
         if (next == BabyNeedState.Idle)
             AudioManager.Instance.StopSound();
         else
@@ -82,6 +87,7 @@ public class BabyStateController : MonoBehaviour
 
     public void NotifySocketAttach(XRSocketInteractor socket, IXRSelectInteractable interactable)
     {
+        // Reject if socket not allowed in current state
         if (!IsSocketInteractionAllowed(socket))
         {
             BabySpitHelper.RejectFromSocket(socket, interactable, m_SpitForce);
@@ -134,6 +140,7 @@ public class BabyStateController : MonoBehaviour
             yield break;
         }
 
+        // Spit out and remove item after feeding
         if (interactable is Object unityInteractable && unityInteractable != null)
             BabySpitHelper.RejectFromSocket(socket, interactable, m_SpitForce);
 
@@ -145,6 +152,7 @@ public class BabyStateController : MonoBehaviour
 
     bool IsSocketInteractionAllowed(XRSocketInteractor socket)
     {
+        // Check allowed socket per state
         if (socket == m_DiaperSocket)
             return m_CurrentNeed == BabyNeedState.Diaper;
 
@@ -156,6 +164,7 @@ public class BabyStateController : MonoBehaviour
 
     void ResolveSockets()
     {
+        // Find by name in children if not assigned in Inspector
         if (m_DiaperSocket == null || m_MouthSocket == null)
         {
             var sockets = GetComponentsInChildren<XRSocketInteractor>(true);
@@ -194,6 +203,7 @@ public class BabyStateController : MonoBehaviour
 
     void RegisterSceneItems()
     {
+        // Attach item type component to scene objects
         EnsureItem("Baby Bottle", BabyItemKind.Bottle);
         EnsureItem("Pacifiler", BabyItemKind.Pacifier);
         EnsureItem("BabyLunaClothDiaper", BabyItemKind.Diaper, addDiaperItem: true);

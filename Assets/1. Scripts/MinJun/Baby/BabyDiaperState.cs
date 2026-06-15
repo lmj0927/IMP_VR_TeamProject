@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
+/// <summary>Handles socket responses during diaper change need state.</summary>
 public class BabyDiaperState : IBabyState
 {
     public void Enter(BabyStateContext context) {}
@@ -15,18 +16,21 @@ public class BabyDiaperState : IBabyState
         if (socket != context.DiaperSocket)
             return;
 
+        // Reject if not a diaper
         if (!BabyItemResolver.TryGetKind(interactable, out var kind) || kind != BabyItemKind.Diaper)
         {
             BabySpitHelper.RejectFromSocket(socket, interactable, context.SpitForce);
             return;
         }
 
+        // Reject dirty diaper
         if (!BabyItemResolver.IsCleanDiaper(interactable))
         {
             BabySpitHelper.RejectFromSocket(socket, interactable, context.SpitForce);
             return;
         }
 
+        // Return to Idle on clean diaper attach
         context.Controller.ChangeState(BabyNeedState.Idle);
     }
 
@@ -34,6 +38,7 @@ public class BabyDiaperState : IBabyState
 
     static void MarkCurrentDiaperDirty(BabyStateContext context)
     {
+        // Mark socket and worn diapers as dirty
         if (context.DiaperSocket != null)
         {
             foreach (var interactable in context.DiaperSocket.interactablesSelected)

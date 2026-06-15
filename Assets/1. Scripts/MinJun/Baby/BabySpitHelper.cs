@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
+/// <summary>Detaches and spits out invalid items from a socket.</summary>
 public static class BabySpitHelper
 {
     public static void RejectFromSocket(
@@ -25,6 +26,7 @@ public static class BabySpitHelper
             break;
         }
 
+        // Apply physics force away from mouth
         ApplySpitForce(interactable, socket.transform.position, spitForce);
     }
 
@@ -39,6 +41,7 @@ public static class BabySpitHelper
         if (direction.sqrMagnitude < 0.001f)
             direction = interactable.transform.forward;
 
+        // Forward + slight upward impulse
         rb.AddForce(direction * spitForce + Vector3.up * (spitForce * 0.25f), ForceMode.Impulse);
     }
 }

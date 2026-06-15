@@ -1,6 +1,7 @@
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
+/// <summary>Handles bottle and pacifier oral need states.</summary>
 public class BabyOralNeedState : IBabyState
 {
     readonly BabyItemKind m_ExpectedItem;
@@ -31,6 +32,7 @@ public class BabyOralNeedState : IBabyState
             return;
         }
 
+        // Start feeding and return to Idle
         m_IsFeeding = true;
         context.Controller.ScheduleOralFeedComplete(socket, interactable);
         context.Controller.ChangeState(BabyNeedState.Idle);
@@ -39,6 +41,7 @@ public class BabyOralNeedState : IBabyState
     public void OnSocketDetach(BabyStateContext context, XRSocketInteractor socket, IXRSelectInteractable interactable) { }
 }
 
+/// <summary>Types of baby need states.</summary>
 public enum BabyNeedState
 {
     Idle,

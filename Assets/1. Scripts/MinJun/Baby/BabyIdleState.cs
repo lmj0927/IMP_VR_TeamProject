@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
+/// <summary>Triggers a random need after a timer in calm state.</summary>
 public class BabyIdleState : IBabyState
 {
     static readonly BabyNeedState[] NeedStates =
@@ -16,6 +17,7 @@ public class BabyIdleState : IBabyState
     public void Enter(BabyStateContext context)
     {
         m_Timer = context.IdleToNeedDelay;
+        // Increment clear count when baby calms down
         GameManager.Instance.ClearState();
     }
 
@@ -27,6 +29,7 @@ public class BabyIdleState : IBabyState
         if (m_Timer > 0f)
             return;
 
+        // Transition to random need state
         var next = NeedStates[Random.Range(0, NeedStates.Length)];
         context.Controller.ChangeState(next);
     }

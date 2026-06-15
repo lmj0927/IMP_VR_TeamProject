@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>Base MonoBehaviour singleton with one instance per scene.</summary>
 public abstract class Singleton<T> : MonoBehaviour where T : Component
 {
     private static T _instance;
@@ -31,6 +32,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
         }
         else
         {
+            // Destroy duplicate instance
             if (_instance != this)
             {
                 Destroy(gameObject);

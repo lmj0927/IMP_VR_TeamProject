@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
+/// <summary>Resolves item type and diaper state from interactables.</summary>
 public static class BabyItemResolver
 {
     public static bool TryGetKind(IXRSelectInteractable interactable, out BabyItemKind kind)
@@ -16,6 +17,7 @@ public static class BabyItemResolver
             return true;
         }
 
+        // Fall back to object name if no component
         return TryGetKindFromName(interactable.transform, out kind);
     }
 

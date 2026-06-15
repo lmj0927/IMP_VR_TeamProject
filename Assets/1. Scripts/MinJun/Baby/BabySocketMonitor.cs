@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
+/// <summary>Notifies BabyStateController when an item is attached to a socket.</summary>
 [RequireComponent(typeof(XRSocketInteractor))]
 public class BabySocketMonitor : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class BabySocketMonitor : MonoBehaviour
         if (m_Baby == null)
             return;
 
+        // Forward attach event to controller
         m_Baby.NotifySocketAttach(m_Socket, args.interactableObject);
     }
 }
