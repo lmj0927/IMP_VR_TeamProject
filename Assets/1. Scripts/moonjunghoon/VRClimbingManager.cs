@@ -38,6 +38,7 @@ public class VRClimbingManager : MonoBehaviour
     private float m_ClimbStartHeight;
     private bool m_StartedBelowExitZone;
 
+    // --- INPUT & STATE DISPATCHER ---
     void Update()
     {
         float leftGripValue = leftGripAction.action.ReadValue<float>();
@@ -46,6 +47,7 @@ public class VRClimbingManager : MonoBehaviour
         bool leftIsInGrip = leftGripValue >= gripThreshold;
         bool rightIsInGrip = rightGripValue >= gripThreshold;
 
+        // Switches between climbing locomotion and grab detection
         if (isClimbing)
         {
             ContinueClimbing(leftIsInGrip, rightIsInGrip);
@@ -60,12 +62,13 @@ public class VRClimbingManager : MonoBehaviour
         rightWasPressed = rightIsInGrip;
     }
 
+    // --- GRAB & DETECT LOGIC ---
     void CheckGrab(Transform controller)
     {
         if (controller == null)
             return;
 
-        // mantle 탈출을 이미 마친 뒤, 위쪽 구역에서만 재그립 클라이밍 차단
+        // Disallow climbing re-triggering if already successfully mantled
         if (m_ExitSequenceComplete && IsAboveExitZone())
             return;
 
@@ -73,7 +76,7 @@ public class VRClimbingManager : MonoBehaviour
         if (colliders.Length > 0)
             StartClimbing(controller);
     }
-
+    // --- CONDITIONS FOR LEDGE EXIT (MANTLE) ---
     bool IsAboveExitZone()
     {
         return exitPoint != null
@@ -93,7 +96,7 @@ public class VRClimbingManager : MonoBehaviour
 
         return movedUpThisFrame || climbedEnoughThisSession;
     }
-
+    // --- CLIMBING LIFECYCLE MANAGEMENT ---
     void StartClimbing(Transform controller)
     {
         m_StartedBelowExitZone = !IsAboveExitZone();
@@ -105,12 +108,14 @@ public class VRClimbingManager : MonoBehaviour
         activeController = controller;
         lastControllerLocalPosition = controller.localPosition;
 
+        // Disable ground movement to prevent physics interference
         if (continuousMoveProvider != null)
             continuousMoveProvider.enabled = false;
     }
 
     void ContinueClimbing(bool leftIsInGrip, bool rightIsInGrip)
     {
+        
         if (activeController == null || xrOrigin == null || characterController == null)
         {
             EndClimbing();
@@ -118,7 +123,7 @@ public class VRClimbingManager : MonoBehaviour
         }
 
         bool isActiveHandStillGripping = (activeController == leftController) ? leftIsInGrip : rightIsInGrip;
-
+        // Handle hand-to-hand switching or release
         if (!isActiveHandStillGripping)
         {
             Transform otherController = (activeController == leftController) ? rightController : leftController;
@@ -137,14 +142,15 @@ public class VRClimbingManager : MonoBehaviour
             EndClimbing();
             return;
         }
-
+        
+        // Calculate hand movement delta and translate into player vertical movement
         Vector3 currentControllerLocalPosition = activeController.localPosition;
         Vector3 localDelta = currentControllerLocalPosition - lastControllerLocalPosition;
         Vector3 worldMoveDirection = xrOrigin.TransformDirection(-localDelta);
         Vector3 verticalMove = new Vector3(0, worldMoveDirection.y, 0);
 
         characterController.Move(verticalMove);
-
+        // Process automatic vaulting over the ledge
         if (useAutoMantle && ShouldTriggerMantle(verticalMove.y))
         {
             TriggerLedgeExit();
@@ -158,11 +164,11 @@ public class VRClimbingManager : MonoBehaviour
     {
         isClimbing = false;
         activeController = null;
-
+        // Restore normal ground movement
         if (continuousMoveProvider != null)
             continuousMoveProvider.enabled = true;
     }
-
+// --- TELEPORTATION TO LEDGE TOP ---
     void TriggerLedgeExit()
     {
         if (m_ExitSequenceComplete || exitPoint == null)
@@ -171,7 +177,8 @@ public class VRClimbingManager : MonoBehaviour
         m_ExitSequenceComplete = true;
         isClimbing = false;
         activeController = null;
-
+        
+        // Warp player to the top of the platform and restore movement
         characterController.enabled = false;
         transform.position = exitPoint.position;
         characterController.enabled = true;
